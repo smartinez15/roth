@@ -14,7 +14,7 @@ public class Cube2Controller : Cube
     private bool[,] path;
 
     private int state; //0 - Inactive, 1 - Selecting, 2 - rotating, 3 - deselecting
-    private float select;
+    private float selectI;
     private char ax;
     private bool reverse;
     private Transform[] currentRotating;
@@ -23,7 +23,7 @@ public class Cube2Controller : Cube
     void Start()
     {
         state = 0;
-        select = 0.8f;
+        selectI = 0.8f;
         reverse = false;
         ax = 'R';
         currentRotating = new Transform[4];
@@ -58,7 +58,7 @@ public class Cube2Controller : Cube
         if (currentPos < 0)
             currentPos *= -1;
 
-        pos = Mathf.MoveTowards(currentPos, select, Time.deltaTime * 1.4f);
+        pos = Mathf.MoveTowards(currentPos, selectI, Time.deltaTime * 1.4f);
         deltaPos = pos - currentPos;
     }
 
@@ -123,7 +123,7 @@ public class Cube2Controller : Cube
             if (deltaPos == 0.0f)
             {
                 state++;
-                select = 0.55f;
+                selectI = 0.55f;
                 if (state > 3)
                 {
                     state = 0;
@@ -133,7 +133,7 @@ public class Cube2Controller : Cube
                         currentRotating[i].SetParent(transform, true);
                     }
                     current.rotation = Quaternion.identity;
-                    select = 0.8f;
+                    selectI = 0.8f;
                 }
             }
         }
@@ -207,6 +207,16 @@ public class Cube2Controller : Cube
                 changeRotation(ax, reverse);
             }
         }
+    }
+
+    public override void select(char axis)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void deselect()
+    {
+        throw new NotImplementedException();
     }
 
     public override void changeRotation(char axis, bool rev)

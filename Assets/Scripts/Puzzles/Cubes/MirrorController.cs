@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class MirrorController : Cube {
 
@@ -15,7 +16,7 @@ public class MirrorController : Cube {
     private const float space=1.2f;
 
     private int state;
-    private float select;
+    private float selectI;
     private char ax;
     private bool reverse;
     private Transform[] currentRotating;
@@ -24,7 +25,7 @@ public class MirrorController : Cube {
     void Start()
     {
         state = 0;
-        select = 1.5f;
+        selectI = 1.5f;
         reverse = false;
         ax = 'R';
         currentRotating = new Transform[9];
@@ -59,7 +60,7 @@ public class MirrorController : Cube {
         if (currentPos < 0)
             currentPos *= -1;
 
-        pos = Mathf.MoveTowards(currentPos, select, Time.deltaTime * 1.4f);
+        pos = Mathf.MoveTowards(currentPos, selectI, Time.deltaTime * 1.4f);
         deltaPos = pos - currentPos;
     }
 
@@ -249,6 +250,16 @@ public class MirrorController : Cube {
                 changeRotation(ax, reverse);
             }
         }
+    }
+
+    public override void select(char axis)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void deselect()
+    {
+        throw new NotImplementedException();
     }
 
     public override void changeRotation(char axis, bool rev)
