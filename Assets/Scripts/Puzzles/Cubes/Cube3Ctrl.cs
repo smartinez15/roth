@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class Cube3Ctrl : Cube {
+public class Cube3Ctrl : Cube
+{
 
     public float rotationSpeed;
+    public Transform selector;
+    public Material selectorMaterial;
     public Transform[] centers, corners, edges, rotationPoints;
     public Transform core;
     public ActiveBlock[] blocks;
@@ -15,7 +19,7 @@ public class Cube3Ctrl : Cube {
 
     private const float space = 1.0f;
 
-    private int state; //0 - Inactive, 1 - Active, 2 - Rotating
+    private int state; //0 - Inactive, 1 - Selecting, 2 - Rotating
     private char ax;
     private bool reverse;
     private Transform[] currentRotating;
@@ -25,8 +29,10 @@ public class Cube3Ctrl : Cube {
     {
         state = 1;
         reverse = false;
-        ax = 'R';
+        ax = 'L';
         currentRotating = new Transform[9];
+        selector.localPosition = new Vector3(-1.1f, 0f, 0f);
+        selector.localRotation = Quaternion.Euler(0f, 0f, 0f);
 
         playerPos.x = -1;
         playerPos.y = -1;
@@ -68,15 +74,15 @@ public class Cube3Ctrl : Cube {
             {
                 for (int i = 0; i < currentRotating.Length; i++)
                 {
-                    //currentRotating[i].rotation = Quaternion.identity;
                     currentRotating[i].SetParent(transform, true);
                 }
+                selector.SetParent(transform, true);
                 current.rotation = Quaternion.identity;
                 reverse = false;
-                state=1;
+                state = 1;
             }
         }
-        else if(manual)
+        else if (manual)
         {
             reverse = Input.GetKey(KeyCode.LeftShift);
 
@@ -117,6 +123,64 @@ public class Cube3Ctrl : Cube {
                 changeRotation('W', reverse);
             }
         }
+    }
+
+    public override void select(char axis)
+    {
+        if (state == 2)
+            return;
+        ax = axis;
+        switch (axis)
+        {
+            case 'L':
+                selector.localPosition = new Vector3(-1.1f, 0f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                break;
+            case 'M':
+                selector.localPosition = new Vector3(0f, 0f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                break;
+            case 'R':
+                selector.localPosition = new Vector3(1.1f, 0f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                break;
+            case 'F':
+                selector.localPosition = new Vector3(0f, 0f, -1.1f);
+                selector.localRotation = Quaternion.Euler(0f, 90f, 0f);
+                break;
+            case 'N':
+                selector.localPosition = new Vector3(0f, 0f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 90f, 0f);
+                break;
+            case 'B':
+                selector.localPosition = new Vector3(0f, 0f, 1.1f);
+                selector.localRotation = Quaternion.Euler(0f, 90f, 0f);
+                break;
+            case 'U':
+                selector.localPosition = new Vector3(0f, 1.1f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                break;
+            case 'W':
+                selector.localPosition = new Vector3(0f, 0f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                break;
+            case 'D':
+                selector.localPosition = new Vector3(0f, -1.1f, 0f);
+                selector.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                break;
+        }
+        Color c = selectorMaterial.color;
+        c.a = 1f;
+        selectorMaterial.color = c;
+    }
+
+    public override void deselect()
+    {
+        if (state == 2)
+            return;
+        Color c = selectorMaterial.color;
+        c.a = 0f;
+        selectorMaterial.color = c;
     }
 
     public override void changeRotation(char axis, bool rev)
@@ -300,7 +364,8 @@ public class Cube3Ctrl : Cube {
             }
             if (j == 9)
             {
-                state=2;
+                selector.SetParent(current, true);
+                state = 2;
             }
         }
     }
