@@ -4,6 +4,7 @@
 Temp/
 Library/
 Builds/
+Builds/*.pdb
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
