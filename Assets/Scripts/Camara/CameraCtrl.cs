@@ -30,13 +30,13 @@ public class CameraCtrl : MonoBehaviour
         // Smoothly interpolate between the camera's current position and it's target position.
         transform.position = Vector3.Lerp(transform.position, targetCamPos, smooth * Time.deltaTime);
 
-        if(Input.GetKey(KeyCode.Z))
+        if(Input.GetKey(KeyCode.Q))
         {
             Vector3 eul = rot.eulerAngles;
             rot = Quaternion.Euler(eul.x, eul.y + 2.5f, eul.z);
             rotate = true;
         }
-        if(Input.GetKey(KeyCode.X))
+        if(Input.GetKey(KeyCode.E))
         {
             Vector3 eul = rot.eulerAngles;
             rot = Quaternion.Euler(eul.x, eul.y - 2.5f, eul.z);
